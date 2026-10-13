@@ -15,7 +15,7 @@
     />
   </head>
   <body>
-    <div class="container">
+    <div class="container py-5 vh-100">
       <h1>Task Planner</h1>
 
       <!-- <button>Add Task</button> -->
@@ -55,20 +55,12 @@
             </div>
             <div class="modal-body">
               <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <label for="title" class="form-label">Title</label>
                   <input
                     type="text"
                     class="form-control"
                     placeholder="Title task"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label for="assignee" class="form-label">Assignee</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Leo messi"
                   />
                 </div>
 
@@ -81,7 +73,7 @@
                   <input type="date" class="form-control" />
                 </div>
 
-                
+
                 <div class="col-md-6">
                   <label for="status" class="form-label">Status</label>
                   <select
@@ -95,8 +87,36 @@
                 </div>
 
                 <div class="col-md-6">
+                  <label for="assignee" class="form-label">Assignee</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Leo messi"
+                  />
+                </div>
+
+                
+                <div class="col-md-6">
+                  <label for="priority" class="form-label">Priority</label>
+                  <select
+                    class="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option value="1" selected>Lower 🔘</option>
+                    <option value="2">Medium 🟡</option>
+                    <option value="3" >Hight 🔴</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
                   <label for="colorInput" class="form-label">Color card</label>
-<input type="color" class="form-control form-control-color" id="colorInput" value="#563d7c" title="Choose your color">
+                  <input
+                    type="color"
+                    class="form-control form-control-color"
+                    id="colorInput"
+                    value="#563d7c"
+                    title="Choose your color"
+                  />
                 </div>
 
                 <div class="col-12">
@@ -119,7 +139,7 @@
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">Understood</button>
+              <button type="button" class="btn btn-primary">Create</button>
             </div>
           </div>
         </div>
