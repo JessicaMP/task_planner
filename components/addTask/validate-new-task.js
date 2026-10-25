@@ -1,14 +1,11 @@
-const rules = {
-  title: 8,
-  assignee: 8,
-  description: 15,
-};
+import { rules_form } from "./form-rules.js";
+
 
 export const validateTaskForm = (e) => {
   e.preventDefault();
   const form = e.target
 
-  Object.entries(rules).forEach(([name, minLength]) => {
+  Object.entries(rules_form).forEach(([name, minLength]) => {
     const input = form.elements[name];
     const value = input.value.trim();
 
