@@ -4,7 +4,8 @@ export const rules_inputs = {
   description: 15,
 };
 
-const getRule = (label, num) => `${label} must be longer than ${num} characters`;
+const getRule = (label, num) =>
+  `${label} must be longer than ${num} characters`;
 
 export const rules_form = {
   title: {
@@ -48,5 +49,17 @@ export const rules_form = {
   },
 };
 
-export const STATUS_OPTIONS = ["Todo 🔘", "In progress 🟡", "Done ✅"];
-export const PRIORITY_OPTIONS = ["Lower 🔘", "Medium 🟡", "High 🔴"];
+export const STATUS_OPTIONS = [
+  { id: 1, label: "To-do 🔘", color: "secondary" },
+  { id: 2, label: "In progress 🟡", color: "warning" },
+  { id: 3, label: "Done ✅", color: "success" },
+  { id: 4, label: "Blocked 🚫", color: "danger" },
+];
+
+export const PRIORITY_OPTIONS = [
+  { id: 1, label: "Lower 🔘", color: "secondary" },
+  { id: 2, label: "Medium 🟡", color: "warning" },
+  { id: 3, label: "High ✅", color: "success" },
+];
+
+export const findOption = (list, id) => list.find((option) => option.id === Number(id));

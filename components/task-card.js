@@ -1,15 +1,34 @@
-import { STATUS_OPTIONS, PRIORITY_OPTIONS } from "./addTask/form-rules.js"
+import { STATUS_OPTIONS, PRIORITY_OPTIONS, findOption } from "./Task/form-rules.js";
 import { taskManager } from "./task-manager.js";
 
-const createRow = (label, value) => {
-  const p = document.createElement("p");
-  p.className = "card-text mb-1";
+const createBadge = (text, color) => {
+  const badge = document.createElement("span");
+  badge.className = `badge text-bg-${color}`;
+  badge.textContent = text;
+  return badge;
+};
 
-  const strong = document.createElement("strong");
-  strong.textContent = `${label}: `;
+// Label and icon in body section
+const createLabelAndIcon = (icon, label, value, colClass = "col-12 col-sm-6") => {
+  const col = document.createElement("div");
+  col.className = colClass;
 
-  p.append(strong, value);
-  return p;
+  const labelEl = document.createElement("div");
+  labelEl.className = "small text-body-secondary";
+  labelEl.textContent = label;
+
+  const valueEl = document.createElement("div");
+  valueEl.className = "d-flex align-items-center gap-2";
+
+  const iconEl = document.createElement("i");
+  iconEl.className = `bi ${icon}`;
+
+  const text = document.createElement("span");
+  text.textContent = value;
+
+  valueEl.append(iconEl, text);
+  col.append(labelEl, valueEl);
+  return col;
 };
 
 export const createTaskCard = (task) => {
@@ -21,28 +40,45 @@ export const createTaskCard = (task) => {
   card.dataset.taskId = task.id;
   card.style.borderTop = `6px solid ${task.color}`;
 
-  const body = document.createElement("div");
-  body.className = "card-body";
+  // --- Header ---
+  const header = document.createElement("div");
+  header.className = "card-header bg-transparent";
+
+  const status = findOption(STATUS_OPTIONS, task.status);
+  const priority = findOption(PRIORITY_OPTIONS, task.priority);
+
+  const badges = document.createElement("div");
+  badges.className = "d-flex flex-wrap gap-2 justify-content-end mb-2";
+  badges.append(
+    createBadge(status?.label ?? "No status", status?.color ?? "secondary"),
+    createBadge(priority?.label ?? "No priority", priority?.color ?? "secondary"),
+  );
 
   const title = document.createElement("h5");
-  title.className = "card-title";
+  title.className = "card-title mb-0";
   title.textContent = `#${task.id} · ${task.title}`;
+
+  header.append(badges, title);
+
+  // --- Body ---
+  const body = document.createElement("div");
+  body.className = "card-body";
 
   const description = document.createElement("p");
   description.className = "card-text text-body-secondary";
   description.textContent = task.description;
 
-  body.append(
-    title,
-    description,
-    createRow("Assignee", task.assignee),
-    createRow("Start date", task.initDate),
-    createRow("Due date", task.endDate),
-    createRow("Status", STATUS_OPTIONS[task.status - 1]),
-    createRow("Priority", PRIORITY_OPTIONS[task.priority - 1]),
+  const info = document.createElement("div");
+  info.className = "row g-2";
+  info.append(
+    createLabelAndIcon("bi-calendar-event", "Start date", task.initDate),
+    createLabelAndIcon("bi-calendar-check", "Due date", task.endDate),
+    createLabelAndIcon("bi-person", "Assignee", task.assignee, "col-12"),
   );
 
-  // --- Botones ---
+  body.append(description, info);
+
+  // --- Footer---
   const footer = document.createElement("div");
   footer.className = "card-footer d-flex gap-2 justify-content-end";
 
@@ -65,7 +101,7 @@ export const createTaskCard = (task) => {
   });
 
   footer.append(editBtn, deleteBtn);
-  card.append(body, footer);
+  card.append(header, body, footer);
   col.append(card);
   return col;
 };

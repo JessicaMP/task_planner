@@ -1,6 +1,5 @@
 import { rules_inputs } from "./form-rules.js";
 
-// Aplica las reglas personalizadas (sin mostrar errores todavía)
 export const applyCustomRules = (form) => {
   Object.entries(rules_inputs).forEach(([name, minLength]) => {
     const input = form.elements[name];
@@ -12,7 +11,6 @@ export const applyCustomRules = (form) => {
   });
 };
 
-// Valida el formulario y devuelve true/false
 export const validateTaskForm = (form) => {
   applyCustomRules(form);
   form.classList.add("was-validated");

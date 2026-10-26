@@ -6,7 +6,7 @@ import { createTaskCard } from "../task-card.js";
 const getListOptions = (list, placeholder = "Select an option") => `
   <option value="" selected disabled>${placeholder}</option>
   ${list
-    .map((item, index) => `<option value="${index + 1}">${item}</option>`)
+    .map(({ id, label }) => `<option value="${id}">${label}</option>`)
     .join("")}
 `;
 
@@ -156,7 +156,7 @@ class NewTask extends HTMLElement {
     form.addEventListener("submit", handleSubmit);
     form.addEventListener("input", () => applyCustomRules(form));
 
-    // Limpiar el form
+    // Clean el form
     modalEl.addEventListener("hidden.bs.modal", () => {
       form.reset();
       form.classList.remove("was-validated");
@@ -165,7 +165,7 @@ class NewTask extends HTMLElement {
       modalEl.querySelector("button[type=submit]").textContent = "Create";
     });
 
-    // Editar card
+    // Edit card
     document.addEventListener("task:edit", (e) => {
       const task = taskManager.getAllTasks().find((t) => t.id === e.detail.id);
       if (!task) return;
@@ -185,7 +185,7 @@ class NewTask extends HTMLElement {
       bootstrap.Modal.getOrCreateInstance(modalEl).show();
     });
 
-    // Muestra las tareas de localstorage
+    // Show task in localstorage
     const container = document.getElementById("tasksContainer");
     taskManager.getAllTasks().forEach((task) => container.append(createTaskCard(task)));
   }

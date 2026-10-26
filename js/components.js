@@ -30,7 +30,7 @@ const loadSharedComponents = async () => {
     /* Componentes comunes */
     
     /* Componentes home page */
-    // loadComponent("modal-new-task", "./components/addTask/modal-new-task.html"),
+    // loadComponent("modal-new-task", "./components/Task/modal-new-task.html"),
   ]);
 };
 
