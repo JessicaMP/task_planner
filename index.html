@@ -1,155 +1,39 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task planner</title>
 
-    <!-- CSS propio -->
-    <link rel="stylesheet" href="./css/main.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task planner</title>
 
-    <!-- CSS Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container py-5 vh-100">
-      <h1>Task Planner</h1>
+  <!-- CSS propio -->
+  <link rel="stylesheet" href="./css/main.css" />
 
-      <!-- <button>Add Task</button> -->
+  <!-- CSS Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
 
-      <!-- Button trigger modal -->
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop"
-      >
-        Add Task
-      </button>
+<body>
+  <div class="container py-5 min-vh-100">
+    <header
+      class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-stretch align-items-sm-center gap-3">
+      <h1 class="p-0 m-0">Task Planner</h1>
 
-      <!-- Modal -->
-      <div
-        class="modal fade"
-        id="staticBackdrop"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h2 class="modal-title fs-5" id="staticBackdropLabel">
-                New Task
-              </h2>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="row g-3">
-                <div class="col-md-12">
-                  <label for="title" class="form-label">Title</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Title task"
-                  />
-                </div>
+      <new-task></new-task>
+    </header>
 
-                <div class="col-md-6">
-                  <label for="initDate" class="form-label">Start date</label>
-                  <input type="date" class="form-control" />
-                </div>
-                <div class="col-md-6">
-                  <label for="endDate" class="form-label">End date</label>
-                  <input type="date" class="form-control" />
-                </div>
+    <main id="tasksContainer" class="row g-3 mt-3"></main>
+  </div>
 
+  <!-- JS propio -->
+  <script src="./js/script.js"></script>
+  <script src="./js/components.js"></script>
+  <script type="module" src="./components/Task/new-task.js"></script>
+  <!-- <script type="module" src="./components/Task/validate-new-task.js"></script> -->
 
-                <div class="col-md-6">
-                  <label for="status" class="form-label">Status</label>
-                  <select
-                    class="form-select"
-                    aria-label="Default select example"
-                  >
-                    <option value="1" selected>Todo 🔘</option>
-                    <option value="2">In progress 🟡</option>
-                    <option value="3">Done ✅</option>
-                  </select>
-                </div>
+  <!-- JS  Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
-                <div class="col-md-6">
-                  <label for="assignee" class="form-label">Assignee</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Leo messi"
-                  />
-                </div>
-
-                
-                <div class="col-md-6">
-                  <label for="priority" class="form-label">Priority</label>
-                  <select
-                    class="form-select"
-                    aria-label="Default select example"
-                  >
-                    <option value="1" selected>Lower 🔘</option>
-                    <option value="2">Medium 🟡</option>
-                    <option value="3" >Hight 🔴</option>
-                  </select>
-                </div>
-
-                <div class="col-md-6">
-                  <label for="colorInput" class="form-label">Color card</label>
-                  <input
-                    type="color"
-                    class="form-control form-control-color"
-                    id="colorInput"
-                    value="#563d7c"
-                    title="Choose your color"
-                  />
-                </div>
-
-                <div class="col-12">
-                  <label for="description" class="form-label"
-                    >Description</label
-                  >
-                  <textarea
-                    class="form-control"
-                    id="description"
-                    rows="3"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary">Create</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- JS propio -->
-    <script src="./js/script.js"></script>
-
-    <!-- JS  Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
 </html>
