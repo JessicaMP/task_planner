@@ -1,6 +1,7 @@
-import { validateTaskForm } from "./validate-new-task.js";
-import { rules_form } from "./form-rules.js";
-
+import { validateTaskForm, applyCustomRules } from "./validate-new-task.js";
+import { rules_form, STATUS_OPTIONS, PRIORITY_OPTIONS } from "./form-rules.js";
+import { taskManager } from "../task-manager.js";
+import { createTaskCard } from "../task-card.js";
 
 const getListOptions = (list, placeholder = "Select an option") => `
   <option value="" selected disabled>${placeholder}</option>
@@ -8,60 +9,100 @@ const getListOptions = (list, placeholder = "Select an option") => `
     .map((item, index) => `<option value="${index + 1}">${item}</option>`)
     .join("")}
 `;
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const form = e.target;
+
+  if (!validateTaskForm(form)) return;
+
+  const data = Object.fromEntries(new FormData(form));
+
+  const values = {
+    title: data.title.trim(),
+    description: data.description.trim(),
+    initDate: data.initDate || new Date().toLocaleDateString("en-CA"),
+    endDate: data.endDate,
+    status: data.status,
+    assignee: data.assignee.trim(),
+    priority: data.priority ?? 1,
+    color: data.color,
+  };
+
+  const editingId = Number(form.dataset.editingId);
+
+  if (editingId) {
+    const updated = taskManager.updateTask(editingId, values);
+    document
+      .querySelector(`[data-task-id="${editingId}"]`)
+      ?.parentElement.replaceWith(createTaskCard(updated));
+  } else {
+    const task = taskManager.addTask(values);
+    document.getElementById("tasksContainer").append(createTaskCard(task));
+  }
+
+  bootstrap.Modal.getOrCreateInstance(document.getElementById("createTask")).hide();
+};
+
 class NewTask extends HTMLElement {
   connectedCallback() {
-    const statusOptions = ["Todo 🔘", "In progress 🟡", "Done ✅"];
-    const priorityOptions = ["Lower 🔘", "Medium 🟡", "High 🔴"];
-
-    const { title, initDate, endDate, status, assignee, priority, color, description } = rules_form
+    const {
+      title,
+      initDate,
+      endDate,
+      status,
+      assignee,
+      priority,
+      color,
+      description,
+    } = rules_form;
 
     const titleTaskComponent = `
       <div class="col-md-12">
         <label for="title" class="form-label">${title.name}</label>
         <input type="text" class="form-control" id="title" name="title" placeholder="${title.placeholder}" required minlength="${title.minlength}" />
         <div class="invalid-feedback">${title.rule}</div>
-      </div>`
+      </div>`;
 
     const endDateComponent = `
       <div class="col-md-6">
         <label for="endDate" class="form-label">${endDate.name}</label>
         <input type="date" class="form-control" id="endDate" name="endDate" required />
         <div class="invalid-feedback">${endDate.rule}</div>
-      </div>`
+      </div>`;
 
     const statusComponent = `
       <div class="col-md-6">
         <label for="status" class="form-label">${status.name}</label>
         <select class="form-select" id="status" name="status" required>
-          ${getListOptions(statusOptions)}
+          ${getListOptions(STATUS_OPTIONS)}
         </select>
         <div class="invalid-feedback">${status.rule}</div>
-      </div>`
+      </div>`;
 
     const assigneeComponent = `
       <div class="col-md-6">
         <label for="assignee" class="form-label">${assignee.name}</label>
-        <input type="text" class="form-control" id="assignee" name="assignee" placeholder="Leo Messi" required minlength="${assignee.rule}" />
+        <input type="text" class="form-control" id="assignee" name="assignee" placeholder="${assignee.placeholder}" required minlength="${assignee.minlength}" />
         <div class="invalid-feedback">${assignee.rule}</div>
-      </div>`
-
+      </div>`;
 
     const colorComponent = `
       <div class="col-md-6">
         <label for="colorInput" class="form-label">${color.name}</label>
         <input type="color" class="form-control form-control-color" id="colorInput" name="color" value="#563d7c" title="${color.placeholder}" />
-      </div>`
+      </div>`;
 
     const descriptionComponent = `
       <div class="col-12">
         <label for="description" class="form-label">${description.name}</label>
         <textarea class="form-control" id="description" name="description" rows="3" required minlength="${description.minlength}" placeholder="${description.placeholder}"></textarea>
         <div class="invalid-feedback">${description.rule}</div>
-      </div>`
+      </div>`;
 
     this.innerHTML = `
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTask">
-        Add Task
+        + New Task
       </button>
 
       <div class="modal fade" id="createTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newTask" aria-hidden="true">
@@ -90,7 +131,7 @@ class NewTask extends HTMLElement {
                 <div class="col-md-6">
                   <label for="priority" class="form-label">${priority.name}</label>
                   <select class="form-select" id="priority" name="priority">
-                    ${getListOptions(priorityOptions)}
+                    ${getListOptions(PRIORITY_OPTIONS)}
                   </select>
                 </div>
 
@@ -109,11 +150,46 @@ class NewTask extends HTMLElement {
       </div>
     `;
 
-    this.querySelector("#taskForm").addEventListener(
-      "submit",
-      validateTaskForm,
-    );
+    const form = this.querySelector("#taskForm");
+    const modalEl = this.querySelector("#createTask");
+
+    form.addEventListener("submit", handleSubmit);
+    form.addEventListener("input", () => applyCustomRules(form));
+
+    // Limpiar el form
+    modalEl.addEventListener("hidden.bs.modal", () => {
+      form.reset();
+      form.classList.remove("was-validated");
+      delete form.dataset.editingId;
+      modalEl.querySelector("#newTask").textContent = "New Task";
+      modalEl.querySelector("button[type=submit]").textContent = "Create";
+    });
+
+    // Editar card
+    document.addEventListener("task:edit", (e) => {
+      const task = taskManager.getAllTasks().find((t) => t.id === e.detail.id);
+      if (!task) return;
+
+      form.dataset.editingId = task.id;
+      form.elements.title.value = task.title;
+      form.elements.description.value = task.description;
+      form.elements.initDate.value = task.initDate;
+      form.elements.endDate.value = task.endDate;
+      form.elements.status.value = task.status;
+      form.elements.assignee.value = task.assignee;
+      form.elements.priority.value = task.priority;
+      form.elements.color.value = task.color;
+
+      modalEl.querySelector("#newTask").textContent = "Edit Task";
+      modalEl.querySelector("button[type=submit]").textContent = "Save";
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    });
+
+    // Muestra las tareas de localstorage
+    const container = document.getElementById("tasksContainer");
+    taskManager.getAllTasks().forEach((task) => container.append(createTaskCard(task)));
   }
+
 }
 
 customElements.define("new-task", NewTask);

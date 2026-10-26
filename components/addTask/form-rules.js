@@ -47,3 +47,6 @@ export const rules_form = {
     minlength: rules_inputs.description,
   },
 };
+
+export const STATUS_OPTIONS = ["Todo 🔘", "In progress 🟡", "Done ✅"];
+export const PRIORITY_OPTIONS = ["Lower 🔘", "Medium 🟡", "High 🔴"];

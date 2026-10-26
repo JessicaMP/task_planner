@@ -15,10 +15,14 @@
     />
   </head>
   <body>
-    <div class="container py-5 vh-100">
-      <h1>Task Planner</h1>
-      
-      <new-task></new-task>
+    <div class="container py-5 min-vh-100">
+      <header class="d-flex justify-content-between align-items-center">
+        <h1 class="p-0 m-0">Task Planner</h1>
+
+        <new-task></new-task>
+      </header>
+
+      <main id="tasksContainer" class="row g-3 mt-3"></main>
     </div>
 
     <!-- JS propio -->

@@ -1,32 +1,20 @@
-import { rules_form } from "./form-rules.js";
+import { rules_inputs } from "./form-rules.js";
 
-
-export const validateTaskForm = (e) => {
-  e.preventDefault();
-  const form = e.target
-
-  Object.entries(rules_form).forEach(([name, minLength]) => {
+// Aplica las reglas personalizadas (sin mostrar errores todavía)
+export const applyCustomRules = (form) => {
+  Object.entries(rules_inputs).forEach(([name, minLength]) => {
     const input = form.elements[name];
     const value = input.value.trim();
 
-    if (value.length <= minLength) {
-      input.setCustomValidity(`Debe tener más de ${minLength} caracteres`);
-    } else {
-      input.setCustomValidity(""); 
-    }
+    input.setCustomValidity(
+      value.length <= minLength ? `Must be longer than ${minLength} characters` : "",
+    );
   });
+};
 
-
+// Valida el formulario y devuelve true/false
+export const validateTaskForm = (form) => {
+  applyCustomRules(form);
   form.classList.add("was-validated");
-
-  if (!form.checkValidity()) {
-    return;
-  }
-
-  const data = Object.fromEntries(new FormData(form));
-  console.log("Tarea válida:", data);
-
-  form.reset();
-  form.classList.remove("was-validated");
-  bootstrap.Modal.getInstance(document.getElementById("createTask")).hide();
+  return form.checkValidity();
 };
