@@ -1,12 +1,14 @@
-import { Task } from "./task.js"
+import { Task } from "./task.js";
+import { createTaskCard } from "./task-card.js"; // NUEVO
+import { STATUS_OPTIONS } from "./Task/form-rules.js";
 
-const STORAGE_KEY = "taskPlanner"
+const STORAGE_KEY = "taskPlanner";
 
 export class TaskManager {
   constructor() {
-    this.tasks = []
-    this.nextId = 1
-    this.loadTasks()
+    this.tasks = [];
+    this.nextId = 1;
+    this.loadTasks();
   }
 
   save() {
@@ -21,7 +23,8 @@ export class TaskManager {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (!saved) return;
       this.tasks = saved.tasks.map((t) => new Task(t));
-      this.nextId = saved.nextId ?? Math.max(0, ...this.tasks.map((t) => t.id)) + 1;
+      this.nextId =
+        saved.nextId ?? Math.max(0, ...this.tasks.map((t) => t.id)) + 1;
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -29,6 +32,18 @@ export class TaskManager {
 
   getAllTasks() {
     return [...this.tasks];
+  }
+
+  getTaskById(taskId) {
+    let foundTask;
+
+    for (const task of this.tasks) {
+      if (task.id === taskId) {
+        foundTask = task;
+      }
+    }
+
+    return foundTask;
   }
 
   getTasksWithStatus(status) {
@@ -65,6 +80,36 @@ export class TaskManager {
 
   assignTask(taskId, assignee) {
     return this.updateTask(taskId, { assignee });
+  }
+
+  render() {
+    const container = document.getElementById("tasksContainer");
+    container.innerHTML = "";
+
+    for (const status of STATUS_OPTIONS) {
+      const tasks = this.getTasksWithStatus(status.id);
+
+      const column = document.createElement("section");
+      column.className = "board-column";
+      column.dataset.status = status.id; // ← a qué estado pertenece
+      column.innerHTML = `
+       <div class="board-column-header text-bg-${status.color}">
+          <h2 class="fs-6 m-0">${status.label}</h2>
+          <span class="badge text-bg-light">${tasks.length}</span>
+          
+        </div>
+
+        <div class="board-column-body"></div>
+
+        <button type="button" class="btn btn-sm btn-light w-100 mt-2 add-task-button">
+          <i class="bi bi-plus-lg"></i> Add card
+        </button>`;
+
+      const body = column.querySelector(".board-column-body");
+      for (const task of tasks) body.append(createTaskCard(task));
+
+      container.append(column);
+    }
   }
 }
 

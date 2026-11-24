@@ -31,15 +31,14 @@ const handleSubmit = (e) => {
 
   const editingId = Number(form.dataset.editingId);
 
-  if (editingId) {
-    const updated = taskManager.updateTask(editingId, values);
-    document
-      .querySelector(`[data-task-id="${editingId}"]`)
-      ?.parentElement.replaceWith(createTaskCard(updated));
+    if (editingId) {
+    taskManager.updateTask(editingId, values);
   } else {
-    const task = taskManager.addTask(values);
-    document.getElementById("tasksContainer").append(createTaskCard(task));
+    taskManager.addTask(values);
   }
+
+  // Después de cualquier cambio, se vuelve a dibujar la lista
+  taskManager.render();
 
   bootstrap.Modal.getOrCreateInstance(document.getElementById("createTask")).hide();
 };
@@ -156,7 +155,7 @@ class NewTask extends HTMLElement {
     form.addEventListener("submit", handleSubmit);
     form.addEventListener("input", () => applyCustomRules(form));
 
-    // Clean el form
+    // Clean form
     modalEl.addEventListener("hidden.bs.modal", () => {
       form.reset();
       form.classList.remove("was-validated");
@@ -186,8 +185,7 @@ class NewTask extends HTMLElement {
     });
 
     // Show task in localstorage
-    const container = document.getElementById("tasksContainer");
-    taskManager.getAllTasks().forEach((task) => container.append(createTaskCard(task)));
+    taskManager.render();
   }
 
 }

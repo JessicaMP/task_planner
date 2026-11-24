@@ -1,5 +1,11 @@
-import { STATUS_OPTIONS, PRIORITY_OPTIONS, findOption } from "./Task/form-rules.js";
+import {
+  STATUS_OPTIONS,
+  PRIORITY_OPTIONS,
+  findOption,
+} from "./Task/form-rules.js";
 import { taskManager } from "./task-manager.js";
+
+const DONE_STATUS = 3;
 
 const createBadge = (text, color) => {
   const badge = document.createElement("span");
@@ -9,7 +15,12 @@ const createBadge = (text, color) => {
 };
 
 // Label and icon in body section
-const createLabelAndIcon = (icon, label, value, colClass = "col-12 col-sm-6") => {
+const createLabelAndIcon = (
+  icon,
+  label,
+  value,
+  colClass = "col-12 col-sm-6",
+) => {
   const col = document.createElement("div");
   col.className = colClass;
 
@@ -33,7 +44,6 @@ const createLabelAndIcon = (icon, label, value, colClass = "col-12 col-sm-6") =>
 
 export const createTaskCard = (task) => {
   const col = document.createElement("div");
-  col.className = "col-12 col-md-6 col-lg-4";
 
   const card = document.createElement("div");
   card.className = "card h-100";
@@ -51,7 +61,10 @@ export const createTaskCard = (task) => {
   badges.className = "d-flex flex-wrap gap-2 justify-content-end mb-2";
   badges.append(
     createBadge(status?.label ?? "No status", status?.color ?? "secondary"),
-    createBadge(priority?.label ?? "No priority", priority?.color ?? "secondary"),
+    createBadge(
+      priority?.label ?? "No priority",
+      priority?.color ?? "secondary",
+    ),
   );
 
   const title = document.createElement("h5");
@@ -71,8 +84,13 @@ export const createTaskCard = (task) => {
   const info = document.createElement("div");
   info.className = "row g-2";
   info.append(
-    createLabelAndIcon("bi-calendar-event", "Start date", task.initDate),
-    createLabelAndIcon("bi-calendar-check", "Due date", task.endDate),
+    createLabelAndIcon(
+      "bi-calendar-event",
+      "Start date",
+      task.initDate,
+      "col-12",
+    ),
+    createLabelAndIcon("bi-calendar-check", "Due date", task.endDate, "col-12"),
     createLabelAndIcon("bi-person", "Assignee", task.assignee, "col-12"),
   );
 
@@ -97,10 +115,20 @@ export const createTaskCard = (task) => {
   deleteBtn.className = "btn btn-outline-danger btn-sm";
   deleteBtn.textContent = "Delete";
   deleteBtn.addEventListener("click", () => {
-    if (taskManager.deleteTask(task.id)) col.remove();
+    if (taskManager.deleteTask(task.id)) taskManager.render();
   });
 
   footer.append(editBtn, deleteBtn);
+
+  // El botón Done solo aparece si la tarea todavía no está completada
+  if (task.status !== DONE_STATUS) {
+    const doneBtn = document.createElement("button");
+    doneBtn.type = "button";
+    doneBtn.className = "btn btn-outline-success btn-sm done-button";
+    doneBtn.textContent = "Done";
+    footer.prepend(doneBtn);
+  }
+
   card.append(header, body, footer);
   col.append(card);
   return col;
