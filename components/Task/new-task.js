@@ -1,7 +1,6 @@
 import { validateTaskForm, applyCustomRules } from "./validate-new-task.js";
 import { rules_form, STATUS_OPTIONS, PRIORITY_OPTIONS } from "./form-rules.js";
 import { taskManager } from "../task-manager.js";
-import { createTaskCard } from "../task-card.js";
 
 const getListOptions = (list, placeholder = "Select an option") => `
   <option value="" selected disabled>${placeholder}</option>

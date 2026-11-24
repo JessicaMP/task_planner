@@ -1,6 +1,6 @@
 import { taskManager } from "../components/task-manager.js";
-let draggedId = null;
 
+let draggedId = null;
 const DONE = 3;
 const tasksContainer = document.querySelector("#tasksContainer");
 
@@ -59,6 +59,11 @@ tasksContainer.addEventListener("drop", (event) => {
   if (task && task.status !== newStatus) {
     taskManager.updateTaskStatus(draggedId, newStatus);
   }
+  draggedId = null;
+  taskManager.render();
+});
+
+tasksContainer.addEventListener("dragend", () => {
   draggedId = null;
   taskManager.render();
 });

@@ -47,6 +47,7 @@ export const createTaskCard = (task) => {
 
   const card = document.createElement("div");
   card.className = "card h-100";
+  card.draggable = true;
   card.dataset.taskId = task.id;
   card.style.borderTop = `6px solid ${task.color}`;
 
